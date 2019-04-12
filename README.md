@@ -1,2 +1,3 @@
-# CRISPR-ABE-RNA-DATA
-CL generation of ABE RNA-seq data
+# CRISPR-BE-ABE-SECURE-DATA
+
+Dedicated data repository for ABE SECURE variants
