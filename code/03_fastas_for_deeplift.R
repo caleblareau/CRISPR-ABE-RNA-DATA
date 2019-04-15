@@ -27,13 +27,13 @@ split_for_deeplift <- function(sample, n = 1000, chrs = 1:2){
   
   # Export
   write.fasta(as.list(seqs[idx_zero]), seq_names[idx_zero],
-              paste("../fastas/ABE-forDeepLift/", sample, "-zero-sampled.fasta"), open = "w")
+              paste0("../fastas/ABE-forDeepLift/", sample, "-zero-sampled.fasta"), open = "w")
   
   write.fasta(as.list(seqs[idx_mid]), seq_names[idx_mid],
-              paste("../fastas/ABE-forDeepLift/", sample, "-mid-sampled.fasta"), open = "w")
+              paste0("../fastas/ABE-forDeepLift/", sample, "-mid-sampled.fasta"), open = "w")
   
   write.fasta(as.list(seqs[idx_high]), seq_names[idx_high],
-              paste("../fastas/ABE-forDeepLift/", sample, "-high-sampled.fasta"), open = "w")
+              paste0("../fastas/ABE-forDeepLift/", sample, "-high-sampled.fasta"), open = "w")
   
   
 }
