@@ -1,12 +1,12 @@
 library(seqinr)
 
-split_for_deeplift <- function(sample, n = 1000, chrs = 1:2){
+split_for_deeplift <- function(sample, n = 1000){
   editor <- "ABE"
   # Import sequence fasta files
   dir_seq <- paste0("../fastas/", editor, "-sequence")
-
+  
   seq_fastas <- list.files(dir_seq, pattern = paste0(sample), full.names = TRUE)
-  seq_fastas <- seq_fastas[grepl(".gz", seq_fastas)][chrs]
+  seq_fastas <- seq_fastas[grepl(".gz", seq_fastas)][grepl("chr21|chr22", seq_fastas)]
   
   # Import data into a list
   fasta_input <- sapply(seq_fastas, function(faf) unlist(read.fasta(faf, as.string = TRUE)))
@@ -18,7 +18,7 @@ split_for_deeplift <- function(sample, n = 1000, chrs = 1:2){
   
   # Split based on edit rate
   zero <- which(meta$editRate == 0 )
-  mid <- which(meta$editRate >= 0.05 &  meta$editRate < 0.20)
+  mid <- which((meta$editRate >= 0.05) &  (meta$editRate < 0.20))
   high <- which(meta$editRate >= 0.5 )
   
   idx_zero <- zero[sample(1:length(zero), min(n, length(zero)))]
@@ -26,14 +26,24 @@ split_for_deeplift <- function(sample, n = 1000, chrs = 1:2){
   idx_high <- high[sample(1:length(high), min(n, length(high)))]
   
   # Export
-  write.fasta(as.list(seqs[idx_zero]), seq_names[idx_zero],
-              paste0("../fastas/ABE-forDeepLift/", sample, "-zero-sampled.fasta"), open = "w")
+  out_zero <- paste0("../fastas/ABE-forDeepLift/", sample, "-zero-sampled.fasta")
+  out_mid <- paste0("../fastas/ABE-forDeepLift/", sample, "-mid-sampled.fasta")
+  out_high <-   paste0("../fastas/ABE-forDeepLift/", sample, "-high-sampled.fasta")
+  write.fasta(as.list(seqs[idx_zero]), seq_names[idx_zero],  out_zero, open = "w")
+  write.fasta(as.list(seqs[idx_mid]), seq_names[idx_mid], out_mid, open = "w")
+  write.fasta(as.list(seqs[idx_high]), seq_names[idx_high], out_high, open = "w")
   
-  write.fasta(as.list(seqs[idx_mid]), seq_names[idx_mid],
-              paste0("../fastas/ABE-forDeepLift/", sample, "-mid-sampled.fasta"), open = "w")
-  
-  write.fasta(as.list(seqs[idx_high]), seq_names[idx_high],
-              paste0("../fastas/ABE-forDeepLift/", sample, "-high-sampled.fasta"), open = "w")
-  
+  # Compress
+  system(paste0("gzip ", out_zero))
+  system(paste0("gzip ", out_mid))
+  system(paste0("gzip ", out_high))
   
 }
+
+split_for_deeplift("156B")
+split_for_deeplift("243B")
+split_for_deeplift("243C")
+split_for_deeplift("244B")
+split_for_deeplift("244C")
+split_for_deeplift("247B")
+split_for_deeplift("247C")
